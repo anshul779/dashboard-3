@@ -1,5 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo, memo } from 'react';
 import * as Icons from 'lucide-react';
+import { isNodeVisible } from '../data/clinicalEngine/helpers';
 
 export default function ClinicalWorkspace({
   schema,

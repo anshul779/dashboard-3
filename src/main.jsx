@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, LineChart, Line } from 'recharts';
 import * as Icons from 'lucide-react';
 
-import { SPECIALTY_SCHEMAS } from './data/specialtySchemas';
+import { SPECIALTY_SCHEMAS, getClinicalFocusOptions, getDefaultClinicalFocus } from './data/specialtySchemas';
 import ClinicalSidebar from './components/ClinicalSidebar';
 import FieldLibraryModal from './components/FieldLibraryModal';
 import ClinicalWorkspace from './components/ClinicalWorkspace';
@@ -110,6 +110,9 @@ class ErrorBoundary extends React.Component {
 function App() {
   const [page, setPage] = useState(route());
   const [specialty, setSpecialty] = useState('Ophthalmology');
+  // Optional clinical focus: pure encounter context (classification / reporting).
+  // It NEVER drives, filters, or replaces the specialty documentation schema.
+  const [clinicalFocus, setClinicalFocus] = useState(getDefaultClinicalFocus('Ophthalmology'));
   const [toasts, setToasts] = useState([]);
   const [notificationPanelOpen, setNotificationPanelOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -178,10 +181,17 @@ function App() {
     }));
   };
 
+  const handleSpecialtyChange = (nextSpecialty) => {
+    setSpecialty(nextSpecialty);
+    setClinicalFocus(getDefaultClinicalFocus(nextSpecialty));
+  };
+
   const content = useMemo(() => {
     const props = {
       specialty,
-      setSpecialty,
+      setSpecialty: handleSpecialtyChange,
+      clinicalFocus,
+      setClinicalFocus,
       query,
       setQuery,
       notify,
@@ -207,7 +217,7 @@ function App() {
       case 'filters': return <Filters {...props} />;
       default: return <Dashboard {...props} />;
     }
-  }, [page, specialty, query, patientDataState]);
+  }, [page, specialty, clinicalFocus, query, patientDataState]);
 
   return (
     <div className="app">
@@ -491,8 +501,11 @@ function Appointments({ notify }) {
 }
 
 /* REDESIGNED CONSULTATION WORKSPACE INTEGRATION */
-function Consultation({ specialty, setSpecialty, notify, patientData, onChangeField }) {
+function Consultation({ specialty, setSpecialty, clinicalFocus, setClinicalFocus, notify, patientData, onChangeField }) {
+  // Specialty is the sole driver of the documentation schema.
+  // Clinical focus is optional context and does NOT alter the schema in any way.
   const schema = SPECIALTY_SCHEMAS[specialty] || SPECIALTY_SCHEMAS['General'] || Object.values(SPECIALTY_SCHEMAS)[0];
+  const focusOptions = getClinicalFocusOptions(specialty);
   const [activeSection, setActiveSection] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [isFieldLibraryOpen, setIsFieldLibraryOpen] = useState(false);
@@ -500,6 +513,9 @@ function Consultation({ specialty, setSpecialty, notify, patientData, onChangeFi
 
   useEffect(() => {
     setActiveSection('');
+    if (!focusOptions.includes(clinicalFocus)) {
+      setClinicalFocus(getDefaultClinicalFocus(specialty));
+    }
   }, [specialty]);
 
   const togglePinField = (fieldId) => {
@@ -549,6 +565,16 @@ function Consultation({ specialty, setSpecialty, notify, patientData, onChangeFi
           <Card title="Specialty Overview">
             <div className="specialty-mini-summary">
               <span className="spec-badge">{specialty}</span>
+              <label className="focus-select-row">
+                <span>CLINICAL FOCUS (OPTIONAL)</span>
+                <select
+                  value={focusOptions.includes(clinicalFocus) ? clinicalFocus : focusOptions[0]}
+                  onChange={(e) => setClinicalFocus(e.target.value)}
+                  title="Optional encounter context — does not change the clinical documentation"
+                >
+                  {focusOptions.map((f) => <option key={f} value={f}>{f}</option>)}
+                </select>
+              </label>
               <p>Active Clinical Schema: <b>{schema?.categories?.length || 0} Categories</b>, <b>{(schema?.categories || []).reduce((acc, c) => acc + (c?.sections?.length || 0), 0)} Sections</b></p>
             </div>
           </Card>
