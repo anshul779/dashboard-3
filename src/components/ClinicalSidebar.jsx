@@ -19,7 +19,7 @@ export default function ClinicalSidebar({
   return (
     <aside className="clinical-nav-redesigned">
       <div className="sidebar-header">
-        <div className="section-label">CLINICAL SECTIONS ({schema?.name || 'Specialty'}{clinicalFocus ? ` — ${clinicalFocus}` : ''})</div>
+        <div className="section-label">CLINICAL SECTIONS</div>
         <button className="field-library-btn" onClick={onOpenFieldLibrary} title="Browse & pin fields from full library">
           <Icons.BookOpen size={13} />
           <span>Field Library</span>
@@ -57,10 +57,12 @@ export default function ClinicalSidebar({
 
           if (query && matchingSections.length === 0) return null;
 
+          const isActive = matchingSections.some((section) => section.id === activeSection);
+
           return (
             <div key={cat.id} className="category-group">
               <button
-                className="category-header no-arrow-header"
+                className={`category-header no-arrow-header ${isActive ? 'active' : ''}`}
                 onClick={() => {
                   if (matchingSections[0]) onSelectSection(matchingSections[0].id);
                 }}
