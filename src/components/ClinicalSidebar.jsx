@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import * as Icons from 'lucide-react';
+import { evaluateDependsOn } from '../data/clinicalEngine/helpers';
 
 export default function ClinicalSidebar({
   schema,
@@ -9,7 +10,8 @@ export default function ClinicalSidebar({
   onOpenFieldLibrary,
   searchQuery,
   onSearchChange,
-  pinnedFields = []
+  pinnedFields = [],
+  clinicalFocus
 }) {
   // Filter categories and sections based on search query
   const query = (searchQuery || '').trim().toLowerCase();
@@ -17,7 +19,7 @@ export default function ClinicalSidebar({
   return (
     <aside className="clinical-nav-redesigned">
       <div className="sidebar-header">
-        <div className="section-label">CLINICAL SECTIONS ({schema?.name || 'Specialty'})</div>
+        <div className="section-label">CLINICAL SECTIONS ({schema?.name || 'Specialty'}{clinicalFocus ? ` — ${clinicalFocus}` : ''})</div>
         <button className="field-library-btn" onClick={onOpenFieldLibrary} title="Browse & pin fields from full library">
           <Icons.BookOpen size={13} />
           <span>Field Library</span>
@@ -42,8 +44,7 @@ export default function ClinicalSidebar({
 
       <div className="categories-accordion">
         {(schema?.categories || []).map((cat) => {
-          // Check conditional category visibility
-          if (cat.dependsOn && !cat.dependsOn(patientData || {})) {
+          if (cat.dependsOn && !evaluateDependsOn(cat.dependsOn, patientData || {})) {
             return null;
           }
 

@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, LineChart, Line } from 'recharts';
 import * as Icons from 'lucide-react';
 
-import { SPECIALTY_SCHEMAS, getClinicalFocusOptions, getDefaultClinicalFocus } from './data/specialtySchemas';
+import { SPECIALTY_SCHEMAS, getClinicalFocusOptions, getDefaultClinicalFocus, getResolvedSpecialtySchema } from './data/specialtySchemas';
 import ClinicalSidebar from './components/ClinicalSidebar';
 import FieldLibraryModal from './components/FieldLibraryModal';
 import ClinicalWorkspace from './components/ClinicalWorkspace';
@@ -225,7 +225,7 @@ function App() {
       <div className={`main ${sidebarCollapsed ? 'main-collapsed' : ''}`}>
         <Header
           specialty={specialty}
-          setSpecialty={setSpecialty}
+          setSpecialty={handleSpecialtyChange}
           clinicalFocus={clinicalFocus}
           setClinicalFocus={setClinicalFocus}
           notify={notify}
@@ -515,9 +515,7 @@ function Appointments({ notify }) {
 
 /* REDESIGNED CONSULTATION WORKSPACE INTEGRATION */
 function Consultation({ specialty, setSpecialty, clinicalFocus, setClinicalFocus, notify, patientData, onChangeField }) {
-  // Specialty is the sole driver of the documentation schema.
-  // Clinical focus is optional context and does NOT alter the schema in any way.
-  const schema = SPECIALTY_SCHEMAS[specialty] || SPECIALTY_SCHEMAS['General'] || Object.values(SPECIALTY_SCHEMAS)[0];
+  const schema = getResolvedSpecialtySchema(SPECIALTY_SCHEMAS, specialty, { clinicalFocus }) || SPECIALTY_SCHEMAS['General'] || Object.values(SPECIALTY_SCHEMAS)[0];
   const focusOptions = getClinicalFocusOptions(specialty);
   const [activeSection, setActiveSection] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -529,7 +527,7 @@ function Consultation({ specialty, setSpecialty, clinicalFocus, setClinicalFocus
     if (!focusOptions.includes(clinicalFocus)) {
       setClinicalFocus(getDefaultClinicalFocus(specialty));
     }
-  }, [specialty]);
+  }, [specialty, clinicalFocus]);
 
   const togglePinField = (fieldId) => {
     setPinnedFields((prev) => {
@@ -555,6 +553,7 @@ function Consultation({ specialty, setSpecialty, clinicalFocus, setClinicalFocus
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
           pinnedFields={pinnedFields}
+          clinicalFocus={clinicalFocus}
         />
 
         {/* Center Main Clinical Content Area */}
@@ -568,6 +567,7 @@ function Consultation({ specialty, setSpecialty, clinicalFocus, setClinicalFocus
           searchQuery={searchQuery}
           pinnedFields={pinnedFields}
           onOpenFieldLibrary={() => setIsFieldLibraryOpen(true)}
+          clinicalFocus={clinicalFocus}
         />
 
         {/* Right Patient Context & Quick Tools Panel */}

@@ -231,7 +231,7 @@
 .section-card-header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:8px;margin-bottom:10px;border-bottom:1px solid #edf1f6}
 .section-card-header-left{display:flex;align-items:center;gap:10px}
 .section-card-header-right{display:flex;align-items:center;gap:10px}
-.form-section-card{position:relative;padding-right:110px}
+.form-section-card{position:relative;padding-right:12px}
 .section-contextual-actions{position:absolute;top:12px;right:0;transform:translateX(100%);display:flex;flex-direction:column;align-items:stretch;gap:6px;z-index:3;animation:actionsFadeIn 0.2s ease-out}
 @keyframes actionsFadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 .action-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:26px;padding:0 8px;border-radius:9px;font-size:10px;font-weight:700;border:1px solid #cedae8;background:#fff;color:#1e3a5f;cursor:pointer;transition:all 0.15s ease;white-space:nowrap;box-shadow:0 5px 14px rgba(15,30,52,0.08);min-width:48px}

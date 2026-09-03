@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useMemo, memo, useCallback } from 'react';
 import * as Icons from 'lucide-react';
-import { isNodeVisible } from '../data/clinicalEngine/helpers';
+import { evaluateDependsOn } from '../data/clinicalEngine/helpers';
 import AddMoreFieldsModal from './AddMoreFieldsModal';
 
 const CORE_FIELD_COUNT = 3;
@@ -14,7 +14,8 @@ export default function ClinicalWorkspace({
   notify,
   searchQuery,
   pinnedFields = [],
-  onOpenFieldLibrary
+  onOpenFieldLibrary,
+  clinicalFocus
 }) {
   const sectionRefs = useRef({});
 
@@ -90,7 +91,7 @@ export default function ClinicalWorkspace({
   let filledVisibleFields = 0;
 
   (schema.categories || []).forEach((cat) => {
-    if (cat.dependsOn && !cat.dependsOn(safePatientData)) return;
+    if (cat.dependsOn && !evaluateDependsOn(cat.dependsOn, safePatientData)) return;
     (cat.sections || []).forEach((sec) => {
       (sec.fields || []).forEach((f) => {
         // Skip hidden fields for completion tracking
@@ -381,9 +382,9 @@ export default function ClinicalWorkspace({
       {/* Workspace Top Banner & Progress */}
       <div className="workspace-header-bar">
         <div>
-          <span className="eyebrow">SPECIALTY WORKSPACE — {schema.name.toUpperCase()}</span>
-          <h2>{schema.name} Documentation Workflow</h2>
-          <p>Data-driven clinical documentation schema for {schema.name}.</p>
+          <span className="eyebrow">SPECIALTY WORKSPACE — {schema.name.toUpperCase()}{clinicalFocus ? ` — ${clinicalFocus.toUpperCase()}` : ''}</span>
+          <h2>{schema.name}{clinicalFocus ? ` — ${clinicalFocus}` : ''} Documentation Workflow</h2>
+          <p>Data-driven clinical documentation schema for {schema.name}{clinicalFocus ? ` (${clinicalFocus})` : ''}.</p>
         </div>
 
         <div className="completion-card">
@@ -426,7 +427,7 @@ export default function ClinicalWorkspace({
       {/* Main Categories & Sections */}
       {schema.categories.map((cat) => {
         // Check category level conditional dependency
-        if (cat.dependsOn && !cat.dependsOn(patientData)) {
+        if (cat.dependsOn && !evaluateDependsOn(cat.dependsOn, patientData)) {
           return null;
         }
 
@@ -460,7 +461,10 @@ export default function ClinicalWorkspace({
                   <div className="section-card-header">
                     <div className="section-card-header-left">
                       <h4>{sec.name}</h4>
-                      <span className="field-count-tag">{(sec.fields || []).length} clinical fields</span>
+                      <span className="field-count-tag">
+                        {(sec.fields || []).length - (hiddenFieldsMap[sec.id] || []).length} clinical fields
+                        {(hiddenFieldsMap[sec.id] || []).length > 0 && ` (+${(hiddenFieldsMap[sec.id] || []).length} hidden)`}
+                      </span>
                     </div>
 
                     <div className="section-card-header-right">
