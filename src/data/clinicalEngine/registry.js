@@ -319,6 +319,126 @@ export const specialtyRegistry = {
     supportedProcedures: ['Ventilation', 'Vasopressors', 'Lines'],
     supportedInvestigations: ['ABG', 'Labs', 'CXR'],
     workflows: ['Admission', 'Organ Systems', 'Daily Plan']
+  },
+  Neonatology: {
+    id: 'Neonatology', name: 'Neonatology & NICU', icon: 'Baby',
+    description: 'Newborn care, NICU management and neonatal procedures.',
+    subspecialties: ['Neonatal Intensive Care', 'Neonatal Screening', 'Newborn Resuscitation'],
+    supportedProcedures: ['Intubation', 'UVC/UAC', 'Surfactant', 'Phototherapy'],
+    supportedInvestigations: ['Blood gas', 'Bilirubin', 'Sepsis screen', 'Cranial USG'],
+    workflows: ['Admission', 'Assessment', 'Investigations', 'Treatment', 'Discharge Planning']
+  },
+  CardiothoracicSurgery: {
+    id: 'CardiothoracicSurgery', name: 'Cardiothoracic Surgery', icon: 'HeartPulse',
+    description: 'Cardiac and thoracic surgical procedures and postoperative care.',
+    subspecialties: ['Cardiac Surgery', 'Thoracic Surgery', 'Minimally Invasive Cardiac Surgery'],
+    supportedProcedures: ['CABG', 'Valve repair/replacement', 'Thoracotomy', 'VATS'],
+    supportedInvestigations: ['Echo', 'Angiography', 'CT Chest', 'Cardiac MRI'],
+    workflows: ['Consultation', 'Pre-op', 'Surgery', 'Post-op', 'ICU Care', 'Follow-Up']
+  },
+  TransplantMedicine: {
+    id: 'TransplantMedicine', name: 'Transplant Medicine', icon: 'RefreshCw',
+    description: 'Organ transplant evaluation, surgery and post-transplant care.',
+    subspecialties: ['Kidney Transplant', 'Liver Transplant', 'Heart Transplant'],
+    supportedProcedures: ['Transplant surgery', 'Biopsy', 'Immunosuppression management'],
+    supportedInvestigations: ['HLA typing', 'Crossmatch', 'Drug levels', 'Organ function tests'],
+    workflows: ['Evaluation', 'Listing', 'Surgery', 'Post-transplant', 'Long-term Follow-Up']
+  },
+  Podiatry: {
+    id: 'Podiatry', name: 'Podiatry & Foot and Ankle Care', icon: 'Accessibility',
+    description: 'Foot and ankle assessment, diagnosis and treatment.',
+    subspecialties: ['Diabetic Foot', 'Sports Podiatry', 'Podiatric Surgery'],
+    supportedProcedures: ['Nail surgery', 'Biomechanical assessment', 'Wound care'],
+    supportedInvestigations: ['X-Ray', 'MRI', 'Vascular studies', 'Gait analysis'],
+    workflows: ['Consultation', 'Examination', 'Diagnosis', 'Treatment', 'Follow-Up']
+  },
+  Audiology: {
+    id: 'Audiology', name: 'Audiology & Hearing Care', icon: 'Ear',
+    description: 'Hearing assessment, rehabilitation and aural care.',
+    subspecialties: ['Clinical Audiology', 'Pediatric Audiology', 'Vestibular Assessment'],
+    supportedProcedures: ['Audiometry', 'Tympanometry', 'Hearing aid fitting', 'Impression taking'],
+    supportedInvestigations: ['Pure tone audiometry', 'Speech audiometry', 'OAE', 'ABR'],
+    workflows: ['Assessment', 'Diagnosis', 'Rehabilitation', 'Follow-Up']
+  },
+  OccupationalTherapy: {
+    id: 'OccupationalTherapy', name: 'Occupational Therapy', icon: 'Hand',
+    description: 'Functional assessment and intervention for daily living activities.',
+    subspecialties: ['Physical Rehabilitation', 'Mental Health OT', 'Pediatric OT'],
+    supportedProcedures: ['Functional assessment', 'Activity analysis', 'Splinting', 'ADL training'],
+    supportedInvestigations: ['Functional capacity', 'Cognitive screening', 'Sensory assessment'],
+    workflows: ['Assessment', 'Goal Setting', 'Intervention', 'Outcome', 'Follow-Up']
+  },
+  SpeechLanguageTherapy: {
+    id: 'SpeechLanguageTherapy', name: 'Speech & Language Therapy', icon: 'Mic',
+    description: 'Communication, swallowing and voice assessment and therapy.',
+    subspecialties: ['Speech Disorders', 'Language Disorders', 'Dysphagia Management'],
+    supportedProcedures: ['Speech assessment', 'Swallowing assessment', 'Voice therapy', 'AAC setup'],
+    supportedInvestigations: ['Speech evaluation', 'Videofluoroscopy', 'FEES', 'Language screening'],
+    workflows: ['Assessment', 'Diagnosis', 'Therapy Plan', 'Intervention', 'Follow-Up']
+  },
+  ClinicalMicrobiology: {
+    id: 'ClinicalMicrobiology', name: 'Clinical Microbiology', icon: 'Microscope',
+    description: 'Microbial identification, susceptibility testing and infection diagnostics.',
+    subspecialties: ['Bacteriology', 'Virology', 'Mycology', 'Parasitology'],
+    supportedProcedures: ['Culture & sensitivity', 'Gram stain', 'AFB testing', 'Rapid diagnostics'],
+    supportedInvestigations: ['Blood culture', 'Urine culture', 'CSF analysis', 'PCR'],
+    workflows: ['Specimen', 'Processing', 'Identification', 'Reporting']
+  },
+  LaboratoryMedicine: {
+    id: 'LaboratoryMedicine', name: 'Laboratory Medicine & Biochemistry', icon: 'FlaskConical',
+    description: 'Clinical chemistry, hematology and laboratory diagnostics.',
+    subspecialties: ['Clinical Chemistry', 'Hematology Lab', 'Immunoassay', 'Point-of-Care Testing'],
+    supportedProcedures: ['Sample processing', 'Quality control', 'Calibration'],
+    supportedInvestigations: ['CBC', 'LFT', 'KFT', 'Lipid profile', 'HbA1c', 'Thyroid panel'],
+    workflows: ['Sample Collection', 'Processing', 'Analysis', 'Reporting', 'Quality Assurance']
+  },
+  OccupationalMedicine: {
+    id: 'OccupationalMedicine', name: 'Occupational Medicine', icon: 'Briefcase',
+    description: 'Workplace health, injury management and occupational assessments.',
+    subspecialties: ['Workplace Injury', 'Pre-employment', 'Industrial Health'],
+    supportedProcedures: ['Fitness for duty assessment', 'Workplace assessment', 'Case management'],
+    supportedInvestigations: ['Audiometry', 'Spirometry', 'Drug screening', 'Vision testing'],
+    workflows: ['Assessment', 'Diagnosis', 'Management', 'Return to Work', 'Follow-Up']
+  },
+  TravelMedicine: {
+    id: 'TravelMedicine', name: 'Travel Medicine', icon: 'Plane',
+    description: 'Pre-travel health advice, vaccination and travel-related illness management.',
+    subspecialties: ['Pre-travel Consultation', 'Travel Vaccination', 'Travel Illness'],
+    supportedProcedures: ['Vaccination', 'Prophylaxis prescription', 'Health education'],
+    supportedInvestigations: ['Malaria test', 'Stool examination', 'Blood tests'],
+    workflows: ['Consultation', 'Risk Assessment', 'Vaccination', 'Prophylaxis', 'Follow-Up']
+  },
+  HomeHealthcare: {
+    id: 'HomeHealthcare', name: 'Home Healthcare & Long-Term Care', icon: 'Home',
+    description: 'Home-based medical care, chronic disease management and long-term care.',
+    subspecialties: ['Chronic Disease Management', 'Palliative Home Care', 'Geriatric Home Care'],
+    supportedProcedures: ['Home visit', 'Wound care', 'IV therapy', 'Monitoring'],
+    supportedInvestigations: ['Point-of-care tests', 'Vital monitoring', 'Lab sample collection'],
+    workflows: ['Assessment', 'Care Plan', 'Home Visit', 'Monitoring', 'Follow-Up']
+  },
+  Telemedicine: {
+    id: 'Telemedicine', name: 'Telemedicine & Virtual Care', icon: 'Video',
+    description: 'Virtual consultations, remote monitoring and digital health management.',
+    subspecialties: ['Teleconsultation', 'Remote Monitoring', 'Digital Therapeutics'],
+    supportedProcedures: ['Video consultation', 'Remote assessment', 'e-Prescription'],
+    supportedInvestigations: ['Patient-reported data', 'Wearable data', 'Remote vitals'],
+    workflows: ['Scheduling', 'Virtual Visit', 'Assessment', 'Plan', 'Follow-Up']
+  },
+  RegenerativeMedicine: {
+    id: 'RegenerativeMedicine', name: 'Regenerative & Stem Cell Medicine', icon: 'Atom',
+    description: 'Stem cell therapy, tissue engineering and regenerative treatments.',
+    subspecialties: ['Stem Cell Therapy', 'Platelet-Rich Plasma', 'Tissue Engineering'],
+    supportedProcedures: ['PRP injection', 'Stem cell therapy', 'Growth factor therapy'],
+    supportedInvestigations: ['Imaging', 'Lab markers', 'Functional assessment'],
+    workflows: ['Assessment', 'Treatment Planning', 'Procedure', 'Monitoring', 'Follow-Up']
+  },
+  PublicHealth: {
+    id: 'PublicHealth', name: 'Public Health & Preventive Medicine', icon: 'Shield',
+    description: 'Population health, epidemiology and preventive health programs.',
+    subspecialties: ['Epidemiology', 'Health Promotion', 'Disease Surveillance'],
+    supportedProcedures: ['Screening programs', 'Health education', 'Outbreak investigation'],
+    supportedInvestigations: ['Surveillance data', 'Screening tests', 'Health surveys'],
+    workflows: ['Surveillance', 'Investigation', 'Intervention', 'Evaluation', 'Reporting']
   }
 };
 

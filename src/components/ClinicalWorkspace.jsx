@@ -382,9 +382,9 @@ export default function ClinicalWorkspace({
       {/* Workspace Top Banner & Progress */}
       <div className="workspace-header-bar">
         <div>
-          <span className="eyebrow">SPECIALTY WORKSPACE — {schema.name.toUpperCase()}{clinicalFocus ? ` — ${clinicalFocus.toUpperCase()}` : ''}</span>
-          <h2>{schema.name}{clinicalFocus ? ` — ${clinicalFocus}` : ''} Documentation Workflow</h2>
-          <p>Data-driven clinical documentation schema for {schema.name}{clinicalFocus ? ` (${clinicalFocus})` : ''}.</p>
+          <span className="eyebrow">SPECIALTY WORKSPACE — {schema.name.toUpperCase()}</span>
+          <h2>{clinicalFocus || schema.name} — Clinical Documentation</h2>
+          <p>Structured clinical documentation for {clinicalFocus || schema.name}.</p>
         </div>
 
         <div className="completion-card">

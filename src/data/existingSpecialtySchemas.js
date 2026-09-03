@@ -3405,7 +3405,7 @@ export const EXISTING_SPECIALTY_SCHEMAS = {
   },
   Oncology: {
     id: 'Oncology',
-    name: 'Oncology & Cancer Care',
+    name: 'Oncology',
     categories: [
       {
         id: 'onc_patient_data',

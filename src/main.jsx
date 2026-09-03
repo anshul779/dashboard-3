@@ -308,8 +308,7 @@ function Sidebar({ page, collapsed, onToggleSidebar }) {
   );
 }
 
-function Header({ specialty, setSpecialty, clinicalFocus, setClinicalFocus, notify, notificationPanelOpen, setNotificationPanelOpen }) {
-  const focusOptions = getClinicalFocusOptions(specialty);
+function Header({ specialty, setSpecialty, notify, notificationPanelOpen, setNotificationPanelOpen }) {
   return (
     <header className="header">
       <div className="specialty">
@@ -318,16 +317,6 @@ function Header({ specialty, setSpecialty, clinicalFocus, setClinicalFocus, noti
           {Object.values(SPECIALTY_SCHEMAS).map((spec) => (
             <option key={spec.id} value={spec.id}>{spec.name}</option>
           ))}
-        </select>
-      </div>
-      <div className="specialty">
-        <label>SPECIALTY / CLINICAL FOCUS</label>
-        <select
-          value={focusOptions.includes(clinicalFocus) ? clinicalFocus : focusOptions[0]}
-          onChange={(e) => setClinicalFocus(e.target.value)}
-          title="Optional encounter context — does not change the clinical documentation"
-        >
-          {focusOptions.map((f) => <option key={f} value={f}>{f}</option>)}
         </select>
       </div>
       <div className="search">

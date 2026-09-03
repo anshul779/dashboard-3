@@ -57,7 +57,22 @@ export const SPECIALTY_CLINICAL_FOCI = {
   PlasticSurgery: ['Cosmetic', 'Burns', 'Reconstructive'],
   VascularSurgery: ['Endovascular', 'Venous'],
   Geriatrics: ['Falls clinic', 'Memory clinic'],
-  PalliativeCare: ['Cancer palliative', 'Community palliative']
+  PalliativeCare: ['Cancer palliative', 'Community palliative'],
+  Neonatology: ['Neonatal Intensive Care', 'Neonatal Screening', 'Newborn Resuscitation', 'Prematurity Care'],
+  CardiothoracicSurgery: ['Cardiac Surgery', 'Thoracic Surgery', 'Minimally Invasive Cardiac Surgery', 'Mechanical Circulatory Support'],
+  TransplantMedicine: ['Kidney Transplant', 'Liver Transplant', 'Heart Transplant', 'Post-transplant Care'],
+  Podiatry: ['Diabetic Foot', 'Sports Podiatry', 'Podiatric Surgery', 'Biomechanics'],
+  Audiology: ['Clinical Audiology', 'Pediatric Audiology', 'Vestibular Assessment', 'Hearing Rehabilitation'],
+  OccupationalTherapy: ['Physical Rehabilitation', 'Mental Health OT', 'Pediatric OT', 'Hand Therapy'],
+  SpeechLanguageTherapy: ['Speech Disorders', 'Language Disorders', 'Dysphagia Management', 'Voice Disorders'],
+  ClinicalMicrobiology: ['Bacteriology', 'Virology', 'Mycology', 'Parasitology'],
+  LaboratoryMedicine: ['Clinical Chemistry', 'Hematology Lab', 'Immunoassay', 'Point-of-Care Testing'],
+  OccupationalMedicine: ['Workplace Injury', 'Pre-employment', 'Industrial Health', 'Fitness Assessment'],
+  TravelMedicine: ['Pre-travel Consultation', 'Travel Vaccination', 'Travel Illness', 'Malaria Prophylaxis'],
+  HomeHealthcare: ['Chronic Disease Management', 'Palliative Home Care', 'Geriatric Home Care', 'Wound Care'],
+  Telemedicine: ['Teleconsultation', 'Remote Monitoring', 'Digital Therapeutics', 'e-Prescription'],
+  RegenerativeMedicine: ['Stem Cell Therapy', 'Platelet-Rich Plasma', 'Tissue Engineering', 'Growth Factor Therapy'],
+  PublicHealth: ['Epidemiology', 'Health Promotion', 'Disease Surveillance', 'Vaccination Programs']
 };
 
 export const SPECIALTY_SCHEMAS = composeSpecialtySchemas({
