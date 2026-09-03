@@ -226,6 +226,8 @@ function App() {
         <Header
           specialty={specialty}
           setSpecialty={setSpecialty}
+          clinicalFocus={clinicalFocus}
+          setClinicalFocus={setClinicalFocus}
           notify={notify}
           notificationPanelOpen={notificationPanelOpen}
           setNotificationPanelOpen={setNotificationPanelOpen}
@@ -306,7 +308,8 @@ function Sidebar({ page, collapsed, onToggleSidebar }) {
   );
 }
 
-function Header({ specialty, setSpecialty, notify, notificationPanelOpen, setNotificationPanelOpen }) {
+function Header({ specialty, setSpecialty, clinicalFocus, setClinicalFocus, notify, notificationPanelOpen, setNotificationPanelOpen }) {
+  const focusOptions = getClinicalFocusOptions(specialty);
   return (
     <header className="header">
       <div className="specialty">
@@ -315,6 +318,16 @@ function Header({ specialty, setSpecialty, notify, notificationPanelOpen, setNot
           {Object.values(SPECIALTY_SCHEMAS).map((spec) => (
             <option key={spec.id} value={spec.id}>{spec.name}</option>
           ))}
+        </select>
+      </div>
+      <div className="specialty">
+        <label>SPECIALTY / CLINICAL FOCUS</label>
+        <select
+          value={focusOptions.includes(clinicalFocus) ? clinicalFocus : focusOptions[0]}
+          onChange={(e) => setClinicalFocus(e.target.value)}
+          title="Optional encounter context — does not change the clinical documentation"
+        >
+          {focusOptions.map((f) => <option key={f} value={f}>{f}</option>)}
         </select>
       </div>
       <div className="search">
@@ -527,9 +540,10 @@ function Consultation({ specialty, setSpecialty, clinicalFocus, setClinicalFocus
     });
   };
 
+  const [patientOverviewOpen, setPatientOverviewOpen] = useState(true);
+
   return (
     <>
-      <PatientBanner />
       <div className="consult-layout-redesigned">
         {/* Left Compact Hierarchical Clinical Sidebar */}
         <ClinicalSidebar
@@ -558,26 +572,81 @@ function Consultation({ specialty, setSpecialty, clinicalFocus, setClinicalFocus
 
         {/* Right Patient Context & Quick Tools Panel */}
         <aside className="right-panel">
-          <Card title="Patient Summary">
-            <Info rows={[['Height', '165 cm'], ['Weight', '64 kg'], ['BMI', '23.5'], ['Blood Group', 'B+'], ['Smoking', 'No']]} />
-          </Card>
-
-          <Card title="Specialty Overview">
-            <div className="specialty-mini-summary">
-              <span className="spec-badge">{specialty}</span>
-              <label className="focus-select-row">
-                <span>CLINICAL FOCUS (OPTIONAL)</span>
-                <select
-                  value={focusOptions.includes(clinicalFocus) ? clinicalFocus : focusOptions[0]}
-                  onChange={(e) => setClinicalFocus(e.target.value)}
-                  title="Optional encounter context — does not change the clinical documentation"
-                >
-                  {focusOptions.map((f) => <option key={f} value={f}>{f}</option>)}
-                </select>
-              </label>
-              <p>Active Clinical Schema: <b>{schema?.categories?.length || 0} Categories</b>, <b>{(schema?.categories || []).reduce((acc, c) => acc + (c?.sections?.length || 0), 0)} Sections</b></p>
-            </div>
-          </Card>
+          {/* Collapsible Patient Overview Card */}
+          <div className="patient-overview-card">
+            <button
+              type="button"
+              className="patient-overview-header"
+              onClick={() => setPatientOverviewOpen((prev) => !prev)}
+            >
+              <span className="patient-overview-title">Patient Overview</span>
+              <Icons.ChevronUp size={16} className={`patient-overview-chevron ${patientOverviewOpen ? '' : 'collapsed'}`} />
+            </button>
+            {patientOverviewOpen && (
+              <div className="patient-overview-body">
+                <div className="patient-overview-identity">
+                  <div className="patient-avatar-sm">JD</div>
+                  <div className="patient-identity-text">
+                    <strong>John Doe</strong>
+                    <span>MRN: MRN123456</span>
+                    <span>Phone: +91 98765 43210</span>
+                  </div>
+                </div>
+                <div className="patient-overview-grid">
+                  <div className="patient-overview-item">
+                    <small>Age / DOB</small>
+                    <b>34 Y / 12 Mar 1990</b>
+                  </div>
+                  <div className="patient-overview-item">
+                    <small>Gender</small>
+                    <b>Male</b>
+                  </div>
+                  <div className="patient-overview-item">
+                    <small>Visit Date & Time</small>
+                    <b>01 May 2026, 10:30 AM</b>
+                  </div>
+                  <div className="patient-overview-item">
+                    <small>Doctor</small>
+                    <b>Dr. Anshul Gupta</b>
+                  </div>
+                  <div className="patient-overview-item">
+                    <small>Visit Type</small>
+                    <b>OPD</b>
+                  </div>
+                  <div className="patient-overview-item">
+                    <small>Allergies</small>
+                    <b className="danger">Penicillin</b>
+                  </div>
+                </div>
+                <div className="patient-overview-vitals">
+                  <div className="patient-overview-item">
+                    <small>Height</small>
+                    <b>165 cm</b>
+                  </div>
+                  <div className="patient-overview-item">
+                    <small>Weight</small>
+                    <b>64 kg</b>
+                  </div>
+                  <div className="patient-overview-item">
+                    <small>BMI</small>
+                    <b>23.5</b>
+                  </div>
+                  <div className="patient-overview-item">
+                    <small>Blood Group</small>
+                    <b>B+</b>
+                  </div>
+                  <div className="patient-overview-item full-width">
+                    <small>Smoking</small>
+                    <b>No</b>
+                  </div>
+                </div>
+                <button className="patient-overview-view-btn" onClick={() => go('profile')}>
+                  <Icons.ExternalLink size={13} />
+                  <span>View Full Record</span>
+                </button>
+              </div>
+            )}
+          </div>
 
           <Card title="Patient Timeline">
             <div className="timeline">

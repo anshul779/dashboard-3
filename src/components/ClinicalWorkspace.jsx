@@ -1,6 +1,9 @@
-import React, { useRef, useEffect, useMemo, memo } from 'react';
+import React, { useRef, useEffect, useMemo, memo, useCallback } from 'react';
 import * as Icons from 'lucide-react';
 import { isNodeVisible } from '../data/clinicalEngine/helpers';
+import AddMoreFieldsModal from './AddMoreFieldsModal';
+
+const CORE_FIELD_COUNT = 3;
 
 export default function ClinicalWorkspace({
   schema,
@@ -16,6 +19,50 @@ export default function ClinicalWorkspace({
   const sectionRefs = useRef({});
 
   const [prioritySections, setPrioritySections] = React.useState([]);
+
+  // State: hidden fields per section (keyed by section ID, values are arrays of field IDs)
+  const [hiddenFieldsMap, setHiddenFieldsMap] = React.useState({});
+
+  // State: which section's "Add More Fields" modal is open
+  const [modalSectionId, setModalSectionId] = React.useState(null);
+  const [modalSectionName, setModalSectionName] = React.useState('');
+
+  // Initialize hidden fields when schema changes
+  useEffect(() => {
+    if (!schema) return;
+    const initialHidden = {};
+    (schema.categories || []).forEach((cat) => {
+      (cat.sections || []).forEach((sec) => {
+        const fields = sec.fields || [];
+        if (fields.length > CORE_FIELD_COUNT) {
+          initialHidden[sec.id] = fields.slice(CORE_FIELD_COUNT).map((f) => f.id);
+        } else {
+          initialHidden[sec.id] = [];
+        }
+      });
+    });
+    setHiddenFieldsMap(initialHidden);
+  }, [schema]);
+
+  // Add a field from hidden to visible
+  const handleAddField = useCallback((sectionId, fieldId) => {
+    setHiddenFieldsMap((prev) => ({
+      ...prev,
+      [sectionId]: (prev[sectionId] || []).filter((id) => id !== fieldId)
+    }));
+  }, []);
+
+  // Open the "Add More Fields" modal for a section
+  const openAddMoreFields = useCallback((sectionId, sectionName) => {
+    setModalSectionId(sectionId);
+    setModalSectionName(sectionName);
+  }, []);
+
+  // Close the modal
+  const closeAddMoreFields = useCallback(() => {
+    setModalSectionId(null);
+    setModalSectionName('');
+  }, []);
 
   const togglePrioritySection = (secId) => {
     setPrioritySections((prev) => {
@@ -38,7 +85,7 @@ export default function ClinicalWorkspace({
   const query = (searchQuery || '').trim().toLowerCase();
   const safePatientData = patientData || {};
 
-  // Compute total clinical fields and completion ratio
+  // Compute total clinical fields and completion ratio (only visible fields)
   let totalVisibleFields = 0;
   let filledVisibleFields = 0;
 
@@ -46,6 +93,8 @@ export default function ClinicalWorkspace({
     if (cat.dependsOn && !cat.dependsOn(safePatientData)) return;
     (cat.sections || []).forEach((sec) => {
       (sec.fields || []).forEach((f) => {
+        // Skip hidden fields for completion tracking
+        if ((hiddenFieldsMap[sec.id] || []).includes(f.id)) return;
         totalVisibleFields++;
         const val = safePatientData[f.id];
         if (val !== undefined && val !== null && val !== '' && val !== 'Select' && val !== 'None' && (Array.isArray(val) ? val.length > 0 : true)) {
@@ -392,7 +441,10 @@ export default function ClinicalWorkspace({
               // Check search filter for sections
               if (query) {
                 const secMatch = (sec.name || '').toLowerCase().includes(query);
-                const fieldMatch = (sec.fields || []).some((f) => (f.label || '').toLowerCase().includes(query) || (f.id || '').toLowerCase().includes(query));
+                const fieldMatch = (sec.fields || []).some((f) => {
+                if ((hiddenFieldsMap[sec.id] || []).includes(f.id)) return false;
+                return (f.label || '').toLowerCase().includes(query) || (f.id || '').toLowerCase().includes(query);
+              });
                 if (!secMatch && !fieldMatch) return null;
               }
 
@@ -411,7 +463,28 @@ export default function ClinicalWorkspace({
                       <span className="field-count-tag">{(sec.fields || []).length} clinical fields</span>
                     </div>
 
-                    {activeSection === sec.id && (
+                    <div className="section-card-header-right">
+                      {(() => {
+                        const totalFields = (sec.fields || []).length;
+                        const hiddenCount = (hiddenFieldsMap[sec.id] || []).length;
+                        const hasMore = totalFields > CORE_FIELD_COUNT && hiddenCount > 0;
+                        return hasMore ? (
+                          <button
+                            type="button"
+                            className="add-more-fields-chip"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              openAddMoreFields(sec.id, sec.name);
+                            }}
+                          >
+                            <Icons.Plus size={12} />
+                            <span>Add More Fields</span>
+                          </button>
+                        ) : null;
+                      })()}
+
+                      {activeSection === sec.id && (
                       <div className="section-contextual-actions">
                         <button
                           type="button"
@@ -467,12 +540,17 @@ export default function ClinicalWorkspace({
                         </button>
                       </div>
                     )}
+                    </div>
                   </div>
 
                   {customWidget}
 
                   <div className="field-grid-redesigned">
                     {(sec.fields || []).map((field) => {
+                      // Skip hidden fields
+                      if ((hiddenFieldsMap[sec.id] || []).includes(field.id)) {
+                        return null;
+                      }
                       if (query && !(field.label || '').toLowerCase().includes(query) && !(field.id || '').toLowerCase().includes(query)) {
                         return null;
                       }
@@ -497,6 +575,31 @@ export default function ClinicalWorkspace({
           </button>
         </div>
       </div>
+
+      {/* Add More Fields Modal */}
+      <AddMoreFieldsModal
+        isOpen={modalSectionId !== null}
+        onClose={closeAddMoreFields}
+        sectionName={modalSectionName}
+        hiddenFields={(() => {
+          if (!modalSectionId || !schema) return [];
+          const hiddenIds = hiddenFieldsMap[modalSectionId] || [];
+          if (hiddenIds.length === 0) return [];
+          // Find the section's fields to get labels
+          let sectionFields = [];
+          (schema.categories || []).forEach((cat) => {
+            (cat.sections || []).forEach((sec) => {
+              if (sec.id === modalSectionId) {
+                sectionFields = sec.fields || [];
+              }
+            });
+          });
+          return hiddenIds
+            .map((id) => sectionFields.find((f) => f.id === id))
+            .filter(Boolean);
+        })()}
+        onAddField={(fieldId) => handleAddField(modalSectionId, fieldId)}
+      />
     </div>
   );
 }
